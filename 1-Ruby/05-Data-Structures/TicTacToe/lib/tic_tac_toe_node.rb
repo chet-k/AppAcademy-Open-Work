@@ -15,33 +15,35 @@ class TicTacToeNode
   def winning_node?(evaluator)
   end
 
-  # This method generates an array of all moves that can be made after
-  # the current move.
+  # Generate an array of all moves that can be made after the current move.
   def children
-    out = []
-    @board.rows.each do |row|
-      row.each do |pos|
-        unless pos
-          out << "child" #test for rspec
-        end
+    out = []  
+    (0..2).each do |row|
+      (0..2).each do |col|
+        pos = [row, col]
+        out << next_move_node(pos) if @board.empty?(pos)
       end
     end
-
     out
   end
 
-  """Write a method children that returns nodes representing all the potential 
-  game states one move after the current node. To create this method, it will be
-  necessary to iterate through all positions that are empty? on the board object. 
+  def next_move_node(pos)
+    mover_mark_after_next = @next_mover_mark == :x ? :o : :x
+    new_board = board_dup(@board)
+    new_board[pos] = @next_mover_mark
+    TicTacToeNode.new(new_board, mover_mark_after_next, pos)
+  end
   
-  For each empty position, create a node by duping the board and 
-  putting a next_mover_mark in the position. 
-  
-  You'll want to alternate next_mover_mark so that next time the other player 
-  gets to move. 
-  
-  Also, set prev_move_pos to the position you just marked, for reasons that will make 
-  sense when we use it later."""
+  def board_dup(board)
+    new_board = Board.new
+    (0..2).each do |row|
+      (0..2).each do |col|
+        pos = [row, col]
+        new_board[pos] = board[pos]
+      end
+    end
+    new_board
+  end
 end
 
 if __FILE__ == $PROGRAM_NAME
