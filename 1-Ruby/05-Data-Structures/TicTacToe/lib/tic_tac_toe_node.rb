@@ -6,13 +6,32 @@ class TicTacToeNode
   def initialize(board, next_mover_mark, prev_move_pos = nil)
     @board = board
     @next_mover_mark = next_mover_mark
+    @opponent_mark = next_mover_mark == :x ? :o : :x
     @prev_move_pos = prev_move_pos
   end
 
   def losing_node?(evaluator)
+    return @board.winner == toggle_xo(evaluator) if @board.over?
+
+    next_moves = children
+    
+    if @next_mover_mark == evaluator
+      next_moves.all? {|child| child.losing_node?(evaluator)}
+    else
+      next_moves.any? {|child| child.losing_node?(evaluator)}
+    end
   end
 
   def winning_node?(evaluator)
+    return @board.winner == evaluator if @board.over?
+
+    next_moves = children
+
+    if @next_mover_mark == evaluator
+      next_moves.any? {|child| child.winning_node?(evaluator)}
+    else
+      next_moves.all? {|child| child.winning_node?(evaluator)}
+    end
   end
 
   # Generate an array of all moves that can be made after the current move.
@@ -27,11 +46,16 @@ class TicTacToeNode
     out
   end
 
+  private
+
+  def toggle_xo(mark)
+    mark == :x ? :o : :x
+  end
+
   def next_move_node(pos)
-    mover_mark_after_next = @next_mover_mark == :x ? :o : :x
     new_board = board_dup(@board)
     new_board[pos] = @next_mover_mark
-    TicTacToeNode.new(new_board, mover_mark_after_next, pos)
+    TicTacToeNode.new(new_board, @opponent_mark, pos)
   end
   
   def board_dup(board)
