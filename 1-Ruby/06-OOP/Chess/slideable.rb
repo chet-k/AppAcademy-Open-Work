@@ -1,3 +1,5 @@
+require "byebug"
+
 module Slideable
     HORIZONTAL_DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]]
     DIAGONAL_DIRS = [[-1, -1],[-1, 1],[1, 1],[1, -1]]
@@ -15,8 +17,7 @@ module Slideable
         move_dirs.each do |direction|
             out += grow_unblocked_moves_in_dir(direction)
         end
-
-
+        out
     end
 
     def move_dirs
@@ -26,13 +27,14 @@ module Slideable
     private
     def grow_unblocked_moves_in_dir(direction)
         dx, dy = direction
-        x, y = self.pos 
-
+        move = [self.pos[0]+dx, self.pos[1]+dy]
         
+        out = []
+        while move.all? {|xy| xy.between?(0,7) }
+            out << move
+            move = [move[0] + dx, move[1] + dy]
+        end
+        
+        out
     end
-
 end
-"""The Slideable module can implement #moves, but it needs to know 
-what directions a piece can move in (diagonal, horizontally/vertically, both). 
-Classes that include the module Slideable (Bishop/Rook/Queen) will need to 
-implement a method #move_dirs, which #moves will use."""
