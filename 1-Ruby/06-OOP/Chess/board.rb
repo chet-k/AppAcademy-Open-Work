@@ -2,6 +2,7 @@ require_relative "piece.rb"
 require "byebug"
 
 class Board
+    attr_reader :null_piece
     def initialize
         @null_piece = NullPiece.instance
 
@@ -34,6 +35,10 @@ class Board
     def valid_pos?(pos)
         pos.all? {|i| i.between?(0,7)}
     end
+
+    # def add_piece(pos, piece)
+    #     self[pos] = piece
+    # end
 
     private
 
