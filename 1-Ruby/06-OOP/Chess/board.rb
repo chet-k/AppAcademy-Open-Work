@@ -20,23 +20,33 @@ class Board
     end
 
     def move_piece(color, start_pos, end_pos)
+        raise EmptySquareError if self[start_pos] == @null_piece
+        raise unless valid_pos?(end_pos)
+
         piece = self[start_pos]
+
         self[end_pos] = piece
+        piece.pos = end_pos
+
         self[start_pos] = @null_piece
     end
 
     def valid_pos?(pos)
+        pos.all? {|i| i.between?(0,7)}
     end
 
     private
 
     def populate_board
         #black at top
-        (0..7).each {|column| @rows[0][column] = Piece.new }
-        (0..7).each {|column| @rows[1][column] = Piece.new }
+        # (0..7).each {|column| @rows[0][column] = Piece.new }
+        # (0..7).each {|column| @rows[1][column] = Piece.new }
 
         #white at bottom
-        (0..7).each {|column| @rows[6][column] = Piece.new }
-        (0..7).each {|column| @rows[7][column] = Piece.new }
+        # (0..7).each {|column| @rows[6][column] = Piece.new }
+        # (0..7).each {|column| @rows[7][column] = Piece.new }
     end
+end
+
+class EmptySquareError < StandardError
 end
