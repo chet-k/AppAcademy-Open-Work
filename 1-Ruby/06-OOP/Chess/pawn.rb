@@ -1,5 +1,4 @@
 require_relative "piece.rb"
-require_relative "board.rb"
 
 class Pawn < Piece
     def symbol
@@ -34,10 +33,4 @@ class Pawn < Piece
 
         attacks.select {|p| @board.valid_pos?(p)}
     end
-end
-
-if __FILE__ == $PROGRAM_NAME
-    b = Board.new
-    whitepawn = Pawn.new(:white, b, [6, 3])
-    p whitepawn.moves
 end

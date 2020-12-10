@@ -1,5 +1,3 @@
-require "byebug"
-
 module Slideable
     HORIZONTAL_DIRS = [[-1, 0], [0, 1], [1, 0], [0, -1]]
     DIAGONAL_DIRS = [[-1, -1],[-1, 1],[1, 1],[1, -1]]
@@ -33,6 +31,7 @@ module Slideable
         while @board.valid_pos?(move)
             break if @board[move].color == self.color
             out << move
+            
             break if @board[move] != @board.null_piece
             move = [move[0] + dx, move[1] + dy]
         end
