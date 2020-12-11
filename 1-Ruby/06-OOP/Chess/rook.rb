@@ -4,7 +4,7 @@ require_relative "slideable.rb"
 class Rook < Piece
     include Slideable
     def symbol
-        :rook
+        :r
     end
 
     def move_dirs

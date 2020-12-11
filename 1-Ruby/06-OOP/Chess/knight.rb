@@ -4,7 +4,7 @@ require_relative "stepable.rb"
 class Knight < Piece
     include Stepable
     def symbol
-        :knight
+        :k
     end
 
     protected
