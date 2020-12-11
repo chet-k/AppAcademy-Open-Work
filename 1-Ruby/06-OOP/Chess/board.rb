@@ -31,7 +31,8 @@ class Board
         raise EmptySquareError if self[start_pos] == @null_piece
         
         piece = self[start_pos]
-        raise unless piece.moves.include?(end_pos)
+        debugger
+        raise unless piece.moves(self).include?(end_pos)
 
         self[end_pos] = piece
         piece.pos = end_pos
@@ -42,10 +43,6 @@ class Board
     def valid_pos?(pos)
         pos.all? {|i| i.between?(0,7)}
     end
-
-    # def add_piece(pos, piece)
-    #     self[pos] = piece
-    # end
 
     def render
         puts "----" * 8

@@ -10,10 +10,10 @@ module Slideable
         DIAGONAL_DIRS
     end
 
-    def moves
+    def moves(board)
         out = []
         move_dirs.each do |direction|
-            out += grow_unblocked_moves_in_dir(direction)
+            out += grow_unblocked_moves_in_dir(board, direction)
         end
         out
     end
@@ -23,16 +23,16 @@ module Slideable
     end
 
     private
-    def grow_unblocked_moves_in_dir(direction)
+    def grow_unblocked_moves_in_dir(board, direction)
         dx, dy = direction
         move = [self.pos[0]+dx, self.pos[1]+dy]
         
         out = []
-        while @board.valid_pos?(move)
-            break if @board[move].color == self.color
+        while board.valid_pos?(move)
+            break if board[move].color == self.color
             out << move
             
-            break if @board[move] != @board.null_piece
+            break if board[move] != board.null_piece
             move = [move[0] + dx, move[1] + dy]
         end
         
