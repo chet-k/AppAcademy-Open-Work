@@ -22,11 +22,13 @@ class Pawn < Piece
 
     def forward_steps
         x, y = @pos
-        steps =  [[x + forward_dir, y]]
-        steps += [[x + 2 * forward_dir, y]] if at_start_row?
         
-        # forward only allowed on blank squares
-        steps.select{|p| @board[p] == @board.null_piece}
+        step1 = [x + forward_dir, y]
+        return [] unless @board[step1] == @board.null_piece
+        
+        step2 = at_start_row? ? [x + 2 * forward_dir, y] : []
+
+        [step1] + [step2]
     end
     
     def side_attacks
