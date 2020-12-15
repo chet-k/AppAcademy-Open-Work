@@ -1,8 +1,9 @@
 require "colorize"
 require_relative "pieces"
+require_relative "display"
 
 class Board
-    attr_reader :null_piece
+    attr_reader :null_piece, :rows
     def initialize
         @null_piece = NullPiece.instance
 
@@ -87,4 +88,19 @@ class PieceCollisionError < StandardError
 end
 
 class OutsideBoardError < StandardError
+end
+
+if $PROGRAM_NAME == __FILE__
+    b = Board.new
+    disp = Display.new(b)
+    
+    # moves = 15
+    # while moves > 0
+    #     system("clear")
+    #     disp.render
+    #     disp.cursor.get_input
+    #     moves -= 1
+    # end
+    # system("clear")
+    # disp.render
 end
