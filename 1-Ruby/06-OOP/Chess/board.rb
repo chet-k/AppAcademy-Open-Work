@@ -4,10 +4,13 @@ require_relative "display"
 
 class Board
     attr_reader :null_piece, :rows
+    ROW_NAMES = ["8", "7", "6", "5", "4", "3", "2", "1"]
+    COL_NAMES = ["a", "b", "c", "d", "e", "f", "g", "h"]
+
     def initialize
         @null_piece = NullPiece.instance
-
         @rows = Array.new(8) {Array.new(8) {@null_piece}}
+        @pieces = []
         populate_board
     end
 
@@ -22,10 +25,13 @@ class Board
     end
 
     def move_piece(color, start_pos, end_pos)
+        start_pos = a1_to_pos(start_pos)
+        end_pos = a1_to_pos(end_pos)
+
         raise EmptySquareError if self[start_pos] == @null_piece
         
         piece = self[start_pos]
-        raise unless piece.moves(self).include?(end_pos)
+        raise unless piece.moves.include?(end_pos)
 
         self[end_pos] = piece
         piece.pos = end_pos
@@ -35,6 +41,13 @@ class Board
 
     def valid_pos?(pos)
         pos.all? {|i| i.between?(0,7)}
+    end
+
+    def in_check?(color)
+        king_pos = nil
+        @pieces.each {|piece| king_pos = piece.pos if piece.symbol == :X && piece.color == color}
+        @pieces.each {|piece| return true if piece.moves.include?(king_pos)}
+        false
     end
 
     def render
@@ -51,6 +64,12 @@ class Board
     end
 
     private
+
+    def a1_to_pos(str)
+        c = COL_NAMES.index(str[0])
+        r = ROW_NAMES.index(str[1])
+        [r, c]
+    end
 
     def populate_board
         #black at top
@@ -78,6 +97,13 @@ class Board
         @rows[7][7] = Rook.new(:white, self, [7,7])
         #pawns
         (0..7).each_with_index {|col| @rows[6][col] = Pawn.new(:white, self, [6, col]) }
+
+        #also put pieces into one array for access by check/checkmate
+        @rows.each do |row|
+            row.each do |piece|
+                @pieces << piece unless piece.empty?
+            end
+        end
     end
 end
 
@@ -93,6 +119,19 @@ end
 if $PROGRAM_NAME == __FILE__
     b = Board.new
     disp = Display.new(b)
+
+    b.move_piece(:black, "f2","f3")
+    # disp.render
+    b.move_piece(:white, "e7","e5")
+    # disp.render
+    b.move_piece(:black, "g2","g4")
+    # disp.render
+    b.move_piece(:white, "d8","h4")
+    disp.render
+
+    puts b.in_check?(:white)
+    puts b.in_check?(:black)
+
     
     # moves = 15
     # while moves > 0
