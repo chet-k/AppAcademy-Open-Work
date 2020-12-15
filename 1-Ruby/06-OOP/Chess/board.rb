@@ -45,9 +45,15 @@ class Board
 
     def in_check?(color)
         king_pos = nil
-        @pieces.each {|piece| king_pos = piece.pos if piece.symbol == :X && piece.color == color}
-        @pieces.each {|piece| return true if piece.moves.include?(king_pos)}
+        @pieces.each {|p| king_pos = p.pos if p.symbol == :X && p.color == color}
+        @pieces.each {|p| return true if p.moves.include?(king_pos)}
         false
+    end
+
+    def checkmate?(color)
+        @pieces.each {|p| return false if p.color == color && 
+                        p.valid_moves.length > 0}
+        true
     end
 
     def render
@@ -130,7 +136,7 @@ if $PROGRAM_NAME == __FILE__
     disp.render
 
     puts b.in_check?(:white)
-    puts b.in_check?(:black)
+    puts b.checkmate?(:white)
 
     
     # moves = 15

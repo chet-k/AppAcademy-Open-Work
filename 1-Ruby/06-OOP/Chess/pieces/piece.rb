@@ -13,11 +13,19 @@ class Piece
         p.all? {|xy| xy.between?(0,7)}
     end 
 
+    def valid_moves
+        moves
+    end
+
     def to_s
         self.symbol.to_s.colorize(@color)
     end
 
     def symbol
+        #overwritten by subclasses
+    end
+
+    def moves
         #overwritten by subclasses
     end
 
