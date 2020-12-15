@@ -20,4 +20,8 @@ class Piece
     def symbol
         #overwritten by subclasses
     end
+
+    def empty?
+        false
+    end
 end

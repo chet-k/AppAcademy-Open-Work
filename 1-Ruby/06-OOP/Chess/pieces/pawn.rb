@@ -24,7 +24,7 @@ class Pawn < Piece
         x, y = @pos
         
         step1 = [x + forward_dir, y]
-        return [] unless @board[step1] == @board.null_piece
+        return [] unless @board[step1].empty?
         
         step2 = at_start_row? ? [x + 2 * forward_dir, y] : []
 
@@ -36,6 +36,6 @@ class Pawn < Piece
         attacks = [[x + forward_dir, y - 1],[x + forward_dir, y + 1]]
         
         # side moves only allowed on enemy pieces
-        attacks.select {|p| @board[p] != @board.null_piece && @board[p].color != @color} 
+        attacks.select {|p| !@board[p].empty? && @board[p].color != @color} 
     end
 end

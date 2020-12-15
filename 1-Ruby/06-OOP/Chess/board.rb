@@ -1,12 +1,5 @@
 require "colorize"
-require "byebug"
-require_relative "null_piece.rb"
-require_relative "rook.rb"
-require_relative "knight.rb"
-require_relative "bishop.rb"
-require_relative "queen.rb"
-require_relative "king.rb"
-require_relative "pawn.rb"
+require_relative "pieces"
 
 class Board
     attr_reader :null_piece

@@ -1,5 +1,3 @@
-require "byebug"
-
 module Stepable
     def move_diffs
         # implemented in classes
