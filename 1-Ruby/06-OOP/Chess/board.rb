@@ -31,10 +31,27 @@ class Board
         start_pos = a1_to_pos(start_pos) if start_pos.is_a?(String)
         end_pos = a1_to_pos(end_pos) if end_pos.is_a?(String)
 
-        raise EmptySquareError if self[start_pos] == @null_piece
-        
         piece = self[start_pos]
-        raise unless piece.moves.include?(end_pos)
+
+        raise EmptySquareError if piece == @null_piece
+        raise InvalidMoveError unless piece.moves.include?(end_pos)
+        raise MoveIntoCheckError unless piece.valid_moves.include?(end_pos)
+
+        self[end_pos] = piece
+        piece.pos = end_pos
+
+        self[start_pos] = @null_piece
+    end
+
+    #same as move_piece, but doesn't check for MoveIntoCheckError
+    def move_piece!(color, start_pos, end_pos) 
+        start_pos = a1_to_pos(start_pos) if start_pos.is_a?(String)
+        end_pos = a1_to_pos(end_pos) if end_pos.is_a?(String)
+
+        piece = self[start_pos]
+
+        raise EmptySquareError if piece == @null_piece
+        raise InvalidMoveError unless piece.moves.include?(end_pos)
 
         self[end_pos] = piece
         piece.pos = end_pos
@@ -140,10 +157,10 @@ end
 class EmptySquareError < StandardError
 end
 
-class PieceCollisionError < StandardError
+class InvalidMoveError < StandardError
 end
 
-class OutsideBoardError < StandardError
+class MoveIntoCheckError < StandardError
 end
 
 if $PROGRAM_NAME == __FILE__
@@ -156,8 +173,8 @@ if $PROGRAM_NAME == __FILE__
     # disp.render
     # b.move_piece(:black, "g2","g4")
     # disp.render
-    # b.move_piece(:white, "d8","h4")
-    # disp.render
+    # # b.move_piece(:white, "d8","h4")
+    # # disp.render
 
     # b.pieces.each do |p| 
     #     puts "piece: #{p.symbol} \nmoves: #{p.valid_moves}\n\n"
