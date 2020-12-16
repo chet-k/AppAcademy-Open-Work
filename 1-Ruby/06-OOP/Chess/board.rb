@@ -33,14 +33,20 @@ class Board
 
         piece = self[start_pos]
 
-        raise EmptySquareError if piece == @null_piece
-        raise WrongColorError if piece.color != color
-        raise InvalidMoveError unless piece.moves.include?(end_pos)
-        raise MoveIntoCheckError unless piece.valid_moves.include?(end_pos)
+        if piece == @null_piece
+            raise "You must choose a piece first."
+        elsif piece.color != color
+            raise "You can only move your color."
+        elsif !piece.moves.include?(end_pos)
+            raise "That #{piece.class.to_s.downcase} cannot move like that."
+        elsif !piece.valid_moves.include?(end_pos)
+            raise "That would move you into check!"
+        end
 
-        self[end_pos] = piece
+        @pieces.delete(self[end_pos]) unless self[end_pos].empty?
+        
         piece.pos = end_pos
-
+        self[end_pos] = piece
         self[start_pos] = @null_piece
     end
 
@@ -99,20 +105,6 @@ class Board
         end
     end
 
-
-    def render
-        puts "----" * 8
-        @rows.each do |row|
-            str = ""
-            row.each do |piece|
-                str += "| " + piece.to_s + " "
-            end
-            puts str + "|"
-            puts "----" * 8
-        end
-        nil
-    end
-
     private
 
     def a1_to_pos(str)
@@ -122,8 +114,6 @@ class Board
     end
 
     def populate_board
-        #black at top
-        # other pieces
         @rows[0][0] = Rook.new(:black, self, [0,0])
         @rows[0][1] = Knight.new(:black, self, [0,1])
         @rows[0][2] = Bishop.new(:black, self, [0,2])
@@ -132,11 +122,8 @@ class Board
         @rows[0][5] = Bishop.new(:black, self, [0,5])
         @rows[0][6] = Knight.new(:black, self, [0,6])
         @rows[0][7] = Rook.new(:black, self, [0,7])
-        #pawns
         (0..7).each_with_index {|col| @rows[1][col] = Pawn.new(:black, self, [1, col]) }
 
-        #white at bottom
-        # other pieces
         @rows[7][0] = Rook.new(:white, self, [7,0])
         @rows[7][1] = Knight.new(:white, self, [7,1])
         @rows[7][2] = Bishop.new(:white, self, [7,2])
@@ -145,50 +132,6 @@ class Board
         @rows[7][5] = Bishop.new(:white, self, [7,5])
         @rows[7][6] = Knight.new(:white, self, [7,6])
         @rows[7][7] = Rook.new(:white, self, [7,7])
-        #pawns
         (0..7).each_with_index {|col| @rows[6][col] = Pawn.new(:white, self, [6, col]) }
     end
-end
-
-class EmptySquareError < StandardError
-end
-
-class InvalidMoveError < StandardError
-end
-
-class MoveIntoCheckError < StandardError
-end
-
-class WrongColorError < StandardError
-end
-
-if $PROGRAM_NAME == __FILE__
-    b = Board.new
-    disp = Display.new(b)
-
-    # b.move_piece(:black, "f2","f3")
-    # disp.render
-    # b.move_piece(:white, "e7","e5")
-    # disp.render
-    # b.move_piece(:black, "g2","g4")
-    # disp.render
-    # # b.move_piece(:white, "d8","h4")
-    # # disp.render
-
-    # b.pieces.each do |p| 
-    #     puts "piece: #{p.symbol} \nmoves: #{p.valid_moves}\n\n"
-    # end
-
-    # puts b.in_check?(:white)
-    # puts b.checkmate?(:white)
-
-    # moves = 15
-    # while moves > 0
-    #     system("clear")
-    #     disp.render
-    #     disp.cursor.get_input
-    #     moves -= 1
-    # end
-    # system("clear")
-    # disp.render
 end

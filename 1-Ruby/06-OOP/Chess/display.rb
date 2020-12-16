@@ -2,10 +2,11 @@ require_relative "cursor"
 require "colorize"
 
 class Display
-    attr_accessor :cursor
+    attr_accessor :cursor, :notifications
     def initialize(board)
         @board = board
         @cursor = Cursor.new([5,0],board)
+        @notifications = {}
     end
 
     def render
@@ -18,8 +19,21 @@ class Display
             end
             puts row_to_render.join("")
         end
+        @notifications.each {|k, msg| puts msg}
         
         nil
+    end
+
+    def reset_errors!
+        @notifications.delete(:error)
+    end
+
+    def set_check!
+        @notifications[:check] = "Check!"
+    end
+
+    def unset_check!
+        @notifications.delete(:check)
     end
 
     private

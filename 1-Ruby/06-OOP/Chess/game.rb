@@ -13,14 +13,21 @@ class Game
     end
 
     def play
-        game_over = false
-        until game_over
-            start_pos = @current_player.make_move(@board)
-            end_pos = @current_player.make_move(@board)
-            @board.move_piece(@current_player.color, start_pos, end_pos)
-            swap_turn!
-            
-            game_over = @board.checkmate?(@current_player.color)
+        until @board.checkmate?(@current_player.color)
+            begin
+                start_pos, end_pos = @current_player.make_move(@board)
+                @board.move_piece(@current_player.color, start_pos, end_pos)
+                
+                swap_turn!
+                if @board.in_check?(@color)
+                    @display.set_check! 
+                else
+                    @display.unset_check! 
+                end
+            rescue StandardError => e
+                @display.notifications[:error] = e.message
+                retry
+            end
         end
     end
 
