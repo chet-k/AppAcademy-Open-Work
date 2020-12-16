@@ -34,6 +34,7 @@ class Board
         piece = self[start_pos]
 
         raise EmptySquareError if piece == @null_piece
+        raise WrongColorError if piece.color != color
         raise InvalidMoveError unless piece.moves.include?(end_pos)
         raise MoveIntoCheckError unless piece.valid_moves.include?(end_pos)
 
@@ -43,19 +44,14 @@ class Board
         self[start_pos] = @null_piece
     end
 
-    #same as move_piece, but doesn't check for MoveIntoCheckError
-    def move_piece!(color, start_pos, end_pos) 
+    #only use for testing a duplicated board! No move validation
+    def move_piece!(start_pos, end_pos) 
         start_pos = a1_to_pos(start_pos) if start_pos.is_a?(String)
         end_pos = a1_to_pos(end_pos) if end_pos.is_a?(String)
 
         piece = self[start_pos]
-
-        raise EmptySquareError if piece == @null_piece
-        raise InvalidMoveError unless piece.moves.include?(end_pos)
-
         self[end_pos] = piece
         piece.pos = end_pos
-
         self[start_pos] = @null_piece
     end
 
@@ -161,6 +157,9 @@ class InvalidMoveError < StandardError
 end
 
 class MoveIntoCheckError < StandardError
+end
+
+class WrongColorError < StandardError
 end
 
 if $PROGRAM_NAME == __FILE__
