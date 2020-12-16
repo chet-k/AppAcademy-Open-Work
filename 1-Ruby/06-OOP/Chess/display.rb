@@ -9,9 +9,6 @@ class Display
     end
 
     def render
-        horiz_divider = "-" * 29
-        
-        puts horiz_divider
         @board.rows.each_with_index do |row, m|
             row_to_render = []
             row.each_with_index do |piece, n|
@@ -19,17 +16,16 @@ class Display
                 bg = [m,n] == @cursor.cursor_pos ? :light_blue : default_bg
                 row_to_render << piece.to_s.colorize(:background => bg)
             end
-        
-            puts row_to_render.join(" | ")
-            puts horiz_divider
+            puts row_to_render.join("")
         end
         
         nil
     end
 
+    private
     def color_by_square(pos)
         m, n = pos
-        light_bg = :light_white
+        light_bg = :default
         dark_bg = :light_black
         if m.even?
             n.even? ? light_bg : dark_bg

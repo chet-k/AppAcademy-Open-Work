@@ -61,7 +61,7 @@ class Board
 
     def in_check?(color)
         king_pos = nil
-        @pieces.each {|p| king_pos = p.pos if p.symbol == :X && p.color == color}
+        @pieces.each {|p| king_pos = p.pos if p.symbol == "♚".colorize(color)}
         @pieces.each {|p| return true if p.moves.include?(king_pos)}
         false
     end

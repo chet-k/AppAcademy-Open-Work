@@ -4,6 +4,7 @@ require "byebug"
 class Piece
     attr_reader :color
     attr_accessor :pos, :board
+
     def initialize(color, board, pos)
         @color = color
         @board = board
@@ -19,7 +20,8 @@ class Piece
     end
 
     def to_s
-        self.symbol.to_s.colorize(@color)
+        " " + self.symbol + " "
+        #to prettify, map [symbol, color] to Unicode 
     end
 
     def symbol
