@@ -5,7 +5,7 @@ class Display
     attr_accessor :cursor
     def initialize(board)
         @board = board
-        @cursor = Cursor.new([0,0],board)
+        @cursor = Cursor.new([5,0],board)
     end
 
     def render

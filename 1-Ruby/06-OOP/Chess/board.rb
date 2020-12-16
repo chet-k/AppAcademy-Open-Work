@@ -3,7 +3,7 @@ require_relative "pieces"
 require_relative "display"
 
 class Board
-    attr_reader :null_piece, :rows
+    attr_reader :null_piece, :rows, :pieces
     ROW_NAMES = ["8", "7", "6", "5", "4", "3", "2", "1"]
     COL_NAMES = ["a", "b", "c", "d", "e", "f", "g", "h"]
 
@@ -12,21 +12,24 @@ class Board
         @rows = Array.new(8) {Array.new(8) {@null_piece}}
         @pieces = []
         populate_board
+        update_piece_list
     end
 
     def [](pos)
+        pos = a1_to_pos(pos) if pos.is_a?(String)
         r, c = pos
         @rows[r][c]
     end
 
     def []=(pos, val)
+        pos = a1_to_pos(pos) if pos.is_a?(String)
         r, c = pos
         @rows[r][c] = val
     end
 
     def move_piece(color, start_pos, end_pos)
-        start_pos = a1_to_pos(start_pos)
-        end_pos = a1_to_pos(end_pos)
+        start_pos = a1_to_pos(start_pos) if start_pos.is_a?(String)
+        end_pos = a1_to_pos(end_pos) if end_pos.is_a?(String)
 
         raise EmptySquareError if self[start_pos] == @null_piece
         
@@ -55,6 +58,34 @@ class Board
                         p.valid_moves.length > 0}
         true
     end
+
+    def dup
+        dup_board = Board.new
+        (0..7).each do |m|
+            (0..7).each do |n|
+                if self[[m,n]] == @null_piece
+                    dup_piece = NullPiece.instance
+                else
+                    dup_piece = self[[m,n]].dup
+                    dup_piece.pos = self[[m,n]].pos.dup
+                    dup_piece.board = dup_board
+                end
+                dup_board[[m,n]] = dup_piece
+            end
+        end
+        dup_board.update_piece_list
+        dup_board
+    end
+
+    def update_piece_list
+        @pieces = []
+        @rows.each do |row|
+            row.each do |piece|
+                @pieces << piece unless piece.empty?
+            end
+        end
+    end
+
 
     def render
         puts "----" * 8
@@ -103,13 +134,6 @@ class Board
         @rows[7][7] = Rook.new(:white, self, [7,7])
         #pawns
         (0..7).each_with_index {|col| @rows[6][col] = Pawn.new(:white, self, [6, col]) }
-
-        #also put pieces into one array for access by check/checkmate
-        @rows.each do |row|
-            row.each do |piece|
-                @pieces << piece unless piece.empty?
-            end
-        end
     end
 end
 
@@ -126,19 +150,22 @@ if $PROGRAM_NAME == __FILE__
     b = Board.new
     disp = Display.new(b)
 
-    b.move_piece(:black, "f2","f3")
+    # b.move_piece(:black, "f2","f3")
     # disp.render
-    b.move_piece(:white, "e7","e5")
+    # b.move_piece(:white, "e7","e5")
     # disp.render
-    b.move_piece(:black, "g2","g4")
+    # b.move_piece(:black, "g2","g4")
     # disp.render
-    b.move_piece(:white, "d8","h4")
-    disp.render
+    # b.move_piece(:white, "d8","h4")
+    # disp.render
 
-    puts b.in_check?(:white)
-    puts b.checkmate?(:white)
+    # b.pieces.each do |p| 
+    #     puts "piece: #{p.symbol} \nmoves: #{p.valid_moves}\n\n"
+    # end
 
-    
+    # puts b.in_check?(:white)
+    # puts b.checkmate?(:white)
+
     # moves = 15
     # while moves > 0
     #     system("clear")

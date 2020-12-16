@@ -25,9 +25,9 @@ class Pawn < Piece
         
         step1 = [x + forward_dir, y]
         return [] unless @board[step1].empty?
+        return [step1] unless at_start_row?
         
-        step2 = at_start_row? ? [x + 2 * forward_dir, y] : []
-
+        step2 = [x + 2 * forward_dir, y]
         [step1] + [step2]
     end
     

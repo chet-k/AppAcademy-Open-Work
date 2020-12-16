@@ -1,8 +1,9 @@
 require "colorize"
+require "byebug"
 
 class Piece
-    attr_reader :color, :board
-    attr_accessor :pos
+    attr_reader :color
+    attr_accessor :pos, :board
     def initialize(color, board, pos)
         @color = color
         @board = board
@@ -14,7 +15,7 @@ class Piece
     end 
 
     def valid_moves
-        moves
+        moves.select {|end_pos| !move_into_check?(end_pos)}
     end
 
     def to_s
@@ -31,5 +32,12 @@ class Piece
 
     def empty?
         false
+    end
+   
+    private
+    def move_into_check?(end_pos)
+        test_board = @board.dup
+        test_board.move_piece(@color, @pos, end_pos)
+        test_board.in_check?(@color)
     end
 end
