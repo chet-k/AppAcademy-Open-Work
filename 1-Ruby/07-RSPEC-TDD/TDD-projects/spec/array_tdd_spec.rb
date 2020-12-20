@@ -1,5 +1,5 @@
 require 'rspec'
-require 'tdd'
+require 'array_tdd'
 
 describe Array do
     context "#my_uniq" do
