@@ -1,3 +1,5 @@
+require "byebug"
+
 class Array
     def my_uniq
         Set.new(self).to_a
@@ -32,5 +34,28 @@ class Array
         end
 
         out
+    end
+
+    def stock_picker
+        #O(N) implementation
+        raise("1D integer input required") unless self.all?{|el| el.is_a? Integer}
+        return 0 if self.length < 2
+
+        future_max = 0
+        future_peaks = []
+        self.reverse_each do |price|
+            future_max = price if price > future_max
+            future_peaks << future_max
+        end
+        future_peaks.reverse!
+
+        max_profit = 0
+        self[0...-1].each_with_index do |buy_price, day|
+            current_best_sell_price = future_peaks[day+1]
+            profit = current_best_sell_price - buy_price
+            max_profit = [profit, max_profit].max
+        end
+
+        max_profit
     end
 end

@@ -37,4 +37,27 @@ describe Array do
             expect {[[0, 1, 2],[3, 4, 5, 6]].my_transpose}.to raise_error(IndexError)
         end
     end
+
+    #Write a method that takes an array of stock prices 
+    #(prices on days 0, 1, ...), and outputs the most profitable pair of days 
+    #on which to first buy the stock and then sell the stock. 
+    #Remember, you can't sell stock before you buy it!
+    context "#stock_picker" do
+        it "raises an error if input is not 1D integer array" do
+            expect {[[1,2,3],[3,4], "alsjdhf"].stock_picker}.to raise_error("1D integer input required")
+        end
+
+        it "returns 0 if history is less than 2 days" do
+            expect([1].stock_picker).to eq(0)
+        end 
+
+        it "outputs the most profitable pair of days, buying before selling" do
+            expect([1, 2, 3, 4, 5, 6].stock_picker).to eq(5)
+            expect([3, 2, 1, 4, 5, 6].stock_picker).to eq(5)
+            expect([6, 5, 4, 3, 2, 1].stock_picker).to eq(0)
+            expect([3, 20, 1, 2, 12, 6].stock_picker).to eq(17)
+        end
+    end
+
+    
 end
