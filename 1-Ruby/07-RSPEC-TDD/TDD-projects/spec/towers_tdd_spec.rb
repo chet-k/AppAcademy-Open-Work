@@ -51,6 +51,9 @@ describe Towers_Game do
         it "returns false if start has disks and and top disk is larger than top disk on finish" do
             expect(game.valid_move?(0,2)).to be false
         end
+        it "returns false if start == finish" do
+            expect(game.valid_move?(1,1)).to be false
+        end
     end
     
     describe "#won?" do
@@ -62,8 +65,10 @@ describe Towers_Game do
         short_game.move(1,0)
         short_game.move(1,2)
 
-        it "returns true only when all disks have been moved to the third tower" do 
+        it "returns false if any disks remain in first 2 towers" do
             expect(short_game.won?).to be false
+        end
+        it "returns true only when all disks have been moved to the third tower" do 
             short_game.move(0,2)
             expect(short_game.won?).to be true
         end
