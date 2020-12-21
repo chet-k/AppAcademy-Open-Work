@@ -21,7 +21,7 @@ class Towers_Game
 
         system("clear")
         p towers
-        puts "\n\n Congratulations! you won in #{@moves} moves"
+        puts "\n\nCongratulations! You won in #{@moves} moves."
     end
 
     def move(start, finish)
@@ -85,4 +85,9 @@ class Towers_Game
             false
         end        
     end
+end
+
+if $PROGRAM_NAME == __FILE__
+    g = Towers_Game.new
+    g.play
 end
