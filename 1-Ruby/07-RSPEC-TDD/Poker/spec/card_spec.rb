@@ -17,4 +17,11 @@ describe Card do
             expect(card.to_s).to eq("|♤2|")
         end
     end
+
+    describe "#==" do 
+        let(:other_card) {Card.new("2", "spades")}
+        it "returns true if the suit and value are the same" do 
+            expect(card == other_card).to be true
+        end
+    end
 end
