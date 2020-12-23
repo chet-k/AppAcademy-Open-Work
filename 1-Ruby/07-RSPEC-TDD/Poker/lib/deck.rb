@@ -1,4 +1,5 @@
 require_relative 'card'
+require 'byebug'
 
 class Deck
     attr_reader :cards
@@ -12,14 +13,19 @@ class Deck
                 @cards << Card.new(v,s)
             end
         end
+        @cards_set = Set.new(@cards)
     end
 
-    def shuffle
+    def shuffle!
+        @cards.shuffle!
     end
 
     def draw
+        @cards.pop
     end
 
-    def replace
+    def replace(c)
+        raise("No duplicate cards allowed") if @cards.include?(c)
+        @cards.unshift(c)
     end
 end
