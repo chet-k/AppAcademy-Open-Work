@@ -1,16 +1,50 @@
 require 'rspec'
 require 'hand'
+require 'card'
 
 describe Hand do
     subject(:hand) {Hand.new}
+    let(:test_card) {Card.new("A","spades")}
     
     describe "#initialize" do
-        it "initializes @cards as an empty array"
+        it "initializes @cards as an empty array" do
+            expect(hand.cards).to eq([])
+        end
+    end
+
+    describe "#add_card" do 
+        it "raises an error unless input is a Card" do
+            expect{hand.add_card("A♤")}.to raise_error("input must be Card class")
+        end
+        
+        it "adds input card to @cards" do
+            hand.add_card(test_card)
+            expect(hand.cards[0]).to equal(test_card)
+        end
+        
+        it "calls self#full?" do
+            expect(hand).to receive(:full?)
+            hand.add_card(test_card)
+        end
+
+        it "raises an error if hand is already full" do 
+            5.times {hand.add_card(test_card)}
+            expect{hand.add_card(test_card)}.to raise_error("hand is already full!")
+        end
     end
 
     describe "#full?" do 
-        it "returns false if less than 5 cards"
-        it "returns true if 5 cards"
+        it "calls Array#length on @cards array" do
+            expect(hand.cards).to receive(:length)
+            hand.full?
+        end
+        it "returns false for less than 5 cards" do 
+            expect(hand.full?).to be false
+        end
+        it "returns true for 5 cards" do
+            5.times {hand.add_card(test_card)}
+            expect(hand.full?).to be true
+        end
     end
 
     describe "#category" do 
