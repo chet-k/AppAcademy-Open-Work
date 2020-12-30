@@ -109,22 +109,111 @@ describe Hand do
             cards.each {|c| hand.add_card(c)}
             cards2 = [Card.new("A","diamonds"), Card.new("Q","hearts"), Card.new("7","clubs"), Card.new("4","clubs"), Card.new("3","spades")]
             cards2.each {|c| other_hand.add_card(c)}
-            expect(hand == other_hand).to be true
+            expect(hand == other_hand).to be false
         end
     end
 
     describe "#wins_against?" do
         let(:other_hand) {Hand.new}
-        let(:cards) {[Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("7","hearts")]}
         
         it "returns true if self#category is a better rank (lower) than input hand" do 
+            cards = [Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("7","hearts")]
             cards.each {|c| hand.add_card(c)}
             cards2 = [Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("Q","hearts")]
             cards2.each {|c| other_hand.add_card(c)}
             expect(hand.wins_against?(other_hand)).to be true
         end
-        it "ranks flush, straight, 2-3-4 of a kind by high card"
-        it "ranks full house by triplet first, then pair"
-        it "ranks 2 pair by highest pair, then 2nd highest, then by 5th card"
+
+        it "ranks straight by high card" do 
+            cards = [Card.new("6","hearts"), Card.new("2","diamonds"), Card.new("3","clubs"), Card.new("4","hearts"), Card.new("5","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("6","clubs"), Card.new("7","diamonds"), Card.new("3","spades"), Card.new("4","diamonds"), Card.new("5","diamonds")]
+            cards2.each {|c| other_hand.add_card(c)}
+            expect(hand.wins_against?(other_hand)).to be false
+        end
+        
+        context "flush or high-card" do 
+            it "ranks by high card" do 
+                cards = [Card.new("6","hearts"), Card.new("8","hearts"), Card.new("J","hearts"), Card.new("A","hearts"), Card.new("3","hearts")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("3","clubs"), Card.new("9","clubs"), Card.new("J","clubs"), Card.new("K","clubs"), Card.new("4","clubs")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+
+            it "ranks by highest non-tied card" do 
+                cards = [Card.new("6","diamonds"), Card.new("8","hearts"), Card.new("J","diamonds"), Card.new("A","hearts"), Card.new("3","hearts")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("3","spades"), Card.new("2","clubs"), Card.new("J","spades"), Card.new("A","clubs"), Card.new("5","spades")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+        end
+
+        context "#-of-a-kind" do 
+            it "ranks 2-of-a-kind by highest kind" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("A","spades"), Card.new("J","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("A","clubs"), Card.new("J","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+            it "ranks tied pairs by high card" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("A","spades"), Card.new("J","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("7","clubs"), Card.new("7","spades"), Card.new("K","clubs"), Card.new("J","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+
+            #no need to test tied triplets, quads in this game variant
+            it "ranks 3-of-a-kind by highest kind" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("7","spades"), Card.new("J","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("6","clubs"), Card.new("J","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+            it "ranks 4-of-a-kind by highest kind" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("6","clubs"), Card.new("7","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+        end
+        
+        it "ranks full house by highest triplet" do 
+            
+            cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("6","spades"), Card.new("6","clubs"), Card.new("7","clubs")]
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","clubs")]
+            cards2.each {|c| other_hand.add_card(c)}
+            expect(hand.wins_against?(other_hand)).to be true
+        end
+
+        context "2 pair" do 
+            it "ranks by highest pair first" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("3","spades"), Card.new("3","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("5","clubs"), Card.new("5","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+            it "ranks by 2nd highest pair second" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("5","spades"), Card.new("5","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("7","clubs"), Card.new("7","spades"), Card.new("4","clubs"), Card.new("4","spades"), Card.new("9","hearts")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+            it "ranks by 5th card last" do 
+                cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("5","spades"), Card.new("5","clubs"), Card.new("9","diamonds")]
+                cards.each {|c| hand.add_card(c)}
+                cards2 = [Card.new("7","clubs"), Card.new("7","spades"), Card.new("5","diamonds"), Card.new("5","hearts"), Card.new("8","diamonds")]
+                cards2.each {|c| other_hand.add_card(c)}
+                expect(hand.wins_against?(other_hand)).to be true
+            end
+        end 
     end
 end
