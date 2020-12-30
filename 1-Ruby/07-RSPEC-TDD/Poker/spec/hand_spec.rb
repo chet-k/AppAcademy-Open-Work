@@ -48,24 +48,81 @@ describe Hand do
     end
 
     describe "#category" do 
-        it "returns 1 for a straight flush"
-        it "returns 2 for four of a kind"
-        it "returns 3 for a full house"
-        it "returns 4 for a flush"
-        it "returns 5 for a 5-card straight"
-        it "returns 6 for 3 of a kind"
-        it "returns 7 for two pair"
-        it "returns 8 for a pair"
-        it "returns 9 for high card"
+        it "returns 1 for a straight flush" do 
+            cards = [Card.new("6","hearts"), Card.new("2","hearts"), Card.new("3","hearts"), Card.new("4","hearts"), Card.new("5","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(1)
+        end
+        it "returns 2 for four of a kind" do 
+            cards = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("6","spades"), Card.new("6","clubs"), Card.new("5","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(2)
+        end
+        it "returns 3 for a full house" do
+            cards = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","clubs")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(3)
+        end
+        it "returns 4 for a flush" do
+            cards = [Card.new("6","hearts"), Card.new("8","hearts"), Card.new("J","hearts"), Card.new("A","hearts"), Card.new("3","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(4)
+        end
+        it "returns 5 for a 5-card straight" do 
+            cards = [Card.new("6","hearts"), Card.new("2","diamonds"), Card.new("3","clubs"), Card.new("4","hearts"), Card.new("5","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(5)            
+        end
+        it "returns 6 for 3 of a kind" do
+            cards = [Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("7","hearts")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(6)
+        end
+        it "returns 7 for two pair" do 
+            cards = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("K","clubs")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(7)
+        end
+        it "returns 8 for a pair" do 
+            cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("A","spades"), Card.new("J","clubs"), Card.new("9","diamonds")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(8)
+        end
+        it "returns 9 for high card" do 
+            cards = [Card.new("K","hearts"), Card.new("Q","diamonds"), Card.new("7","spades"), Card.new("4","spades"), Card.new("3","clubs")]
+            cards.each {|c| hand.add_card(c)}
+            expect(hand.category).to eq(9)
+        end
     end
 
     describe "#==" do
-        it "returns true if the hands tie"
-        it "returns false if the hands do not tie"
+        let(:other_hand) {Hand.new}
+        let(:cards) {[Card.new("K","hearts"), Card.new("Q","diamonds"), Card.new("7","spades"), Card.new("4","spades"), Card.new("3","clubs")]}
+
+        it "returns true if the hands tie (duplicate sets of values)" do 
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("K","diamonds"), Card.new("Q","hearts"), Card.new("7","clubs"), Card.new("4","clubs"), Card.new("3","spades")]
+            cards2.each {|c| other_hand.add_card(c)}
+            expect(hand == other_hand).to be true
+        end
+        it "returns false if the hands do not tie" do 
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("A","diamonds"), Card.new("Q","hearts"), Card.new("7","clubs"), Card.new("4","clubs"), Card.new("3","spades")]
+            cards2.each {|c| other_hand.add_card(c)}
+            expect(hand == other_hand).to be true
+        end
     end
 
-    describe "#>" do
-        it "returns true if self#category is a better rank (lower) than input hand"
+    describe "#wins_against?" do
+        let(:other_hand) {Hand.new}
+        let(:cards) {[Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("7","hearts")]}
+        
+        it "returns true if self#category is a better rank (lower) than input hand" do 
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("6","hearts"), Card.new("K","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("Q","hearts")]
+            cards2.each {|c| other_hand.add_card(c)}
+            expect(hand.wins_against?(other_hand)).to be true
+        end
         it "ranks flush, straight, 2-3-4 of a kind by high card"
         it "ranks full house by triplet first, then pair"
         it "ranks 2 pair by highest pair, then 2nd highest, then by 5th card"

@@ -15,4 +15,7 @@ class Hand
     def full?
         @cards.length == 5
     end
+
+    def category
+    end
 end
