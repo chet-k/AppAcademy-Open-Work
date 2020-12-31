@@ -14,6 +14,12 @@ class Hand
         @cards.sort_by!(&:rank)
     end
 
+    def remove_card(idx)
+        raise "hand is empty!" unless @cards.length > 0
+        raise "integer between 0-#{@cards.length-1} required" unless idx.between?(0,@cards.length-1)
+        @cards.delete_at(idx)
+    end
+
     def full?
         @cards.length == 5
     end

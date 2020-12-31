@@ -33,6 +33,32 @@ describe Hand do
         end
     end
 
+    describe "#remove_card" do 
+        it "raises an error if the hand is empty" do
+            expect{hand.remove_card(0)}.to raise_error("hand is empty!")
+        end
+        
+        it "raises an error unless input is a valid index for .cards array" do 
+            5.times {hand.add_card(test_card)}
+            expect{hand.remove_card(5)}.to raise_error("integer between 0-4 required")
+        end
+        
+        it "returns the Card at given index" do 
+            my_card = Card.new("Q","hearts")
+            hand.add_card(test_card)
+            hand.add_card(my_card)
+            expect{hand.remove_card(1)}.to equal(my_card)            
+        end
+
+        it "removes the Card at given index" do 
+            my_card = Card.new("Q","hearts")
+            hand.add_card(test_card)
+            hand.add_card(my_card)
+            hand.remove_card(1) #remove test_card
+            expect(hand.cards[0]).to equal(my_card)
+        end
+    end
+
     describe "#full?" do 
         it "calls Array#length on @cards array" do
             expect(hand.cards).to receive(:length)
