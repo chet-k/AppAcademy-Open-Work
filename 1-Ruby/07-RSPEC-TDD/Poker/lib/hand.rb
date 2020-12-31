@@ -1,13 +1,10 @@
 require_relative 'card.rb'
-require 'byebug'
 
 class Hand
     attr_reader :cards
     def initialize
         @cards = []
     end
-
-    #implementation idea: "bundles" of duplicate cards (#-of-a-kind) and non-duplicates.
     
     def add_card(new_card)
         raise "hand is already full!" if full?
@@ -26,11 +23,19 @@ class Hand
 
         case self.category <=> other_deck.category
         when -1
-            true
+            true  #my hand wins if my category is lower
         when 1
-            false
+            false #other hand wins if my category is higher
         when 0
-            "not implemented"
+            # if hand categories are the same, then the group lengths will 
+            # also be the same.
+            my_groups, other_groups = self.group_cards_by_kind, other_deck.group_cards_by_kind
+            my_groups.each_with_index do |g, i|
+                el1 = g[0]
+                el2 = other_groups[i][0]
+                next if el1 == el2
+                return el1 < el2
+            end
         end
     end
 
@@ -39,8 +44,6 @@ class Hand
         
         @cards.sort_by!(&:rank)
         groups = group_cards_by_kind
-
-        # debugger
 
         if straight? && flush?
             1
@@ -86,13 +89,8 @@ class Hand
         out.sort_by{|a| -a.length}
     end
 
-    def show
-        s = []
-        @cards.each {|c| s << c.to_s}
-        s.join(" ")
-    end
-
     private
+
     def flush?
         @cards.all? {|c| c.suit == @cards[0].suit}
     end
@@ -108,31 +106,4 @@ class Hand
         end
         true
     end
-end
-
-
-if $PROGRAM_NAME == __FILE__
-
-    # it "ranks 4-of-a-kind by highest kind" do 
-    hand = Hand.new
-    cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("7","spades"), Card.new("6","clubs"), Card.new("7","clubs")]
-    cards.each {|c| hand.add_card(c)}
-    puts hand.show
-
-    other_hand = Hand.new
-    cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("6","clubs"), Card.new("6","spades")]
-    cards2.each {|c| other_hand.add_card(c)}
-    puts other_hand.show
-    puts hand.wins_against?(other_hand)
-    # expect(hand.wins_against?(other_hand)).to be true
-
-                
-    # it "ranks full house by highest triplet" do 
-
-    # cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("6","spades"), Card.new("6","clubs"), Card.new("7","clubs")]
-    # cards.each {|c| hand.add_card(c)}
-    # cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","clubs")]
-    # cards2.each {|c| other_hand.add_card(c)}
-
-    # expect(hand.wins_against?(other_hand)).to be true
 end

@@ -1,7 +1,6 @@
 require 'rspec'
 require 'hand'
 require 'card'
-require 'byebug'
 
 describe Hand do
     subject(:hand) {Hand.new}
@@ -138,7 +137,6 @@ describe Hand do
             cards.each {|c| hand.add_card(c)}
             cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","spades")]
             cards2.each {|c| other_hand.add_card(c)}
-            # debugger
             expect(hand.wins_against?(other_hand)).to be true
         end
         
