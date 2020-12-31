@@ -1,6 +1,7 @@
 require 'rspec'
 require 'hand'
 require 'card'
+require 'byebug'
 
 describe Hand do
     subject(:hand) {Hand.new}
@@ -131,6 +132,15 @@ describe Hand do
             cards2.each {|c| other_hand.add_card(c)}
             expect(hand.wins_against?(other_hand)).to be false
         end
+
+        it "ranks full house by highest triplet" do 
+            cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("6","spades"), Card.new("6","clubs"), Card.new("7","clubs")]
+            cards.each {|c| hand.add_card(c)}
+            cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","spades")]
+            cards2.each {|c| other_hand.add_card(c)}
+            # debugger
+            expect(hand.wins_against?(other_hand)).to be true
+        end
         
         context "flush or high-card" do 
             it "ranks by high card" do 
@@ -177,19 +187,10 @@ describe Hand do
             it "ranks 4-of-a-kind by highest kind" do 
                 cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("9","diamonds")]
                 cards.each {|c| hand.add_card(c)}
-                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("6","clubs"), Card.new("7","spades"), Card.new("9","hearts")]
+                cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("6","clubs"), Card.new("6","spades"), Card.new("9","hearts")]
                 cards2.each {|c| other_hand.add_card(c)}
                 expect(hand.wins_against?(other_hand)).to be true
             end
-        end
-        
-        it "ranks full house by highest triplet" do 
-            
-            cards = [Card.new("7","hearts"), Card.new("7","diamonds"), Card.new("6","spades"), Card.new("6","clubs"), Card.new("7","clubs")]
-            cards.each {|c| hand.add_card(c)}
-            cards2 = [Card.new("6","hearts"), Card.new("6","diamonds"), Card.new("7","spades"), Card.new("7","clubs"), Card.new("6","clubs")]
-            cards2.each {|c| other_hand.add_card(c)}
-            expect(hand.wins_against?(other_hand)).to be true
         end
 
         context "2 pair" do 
