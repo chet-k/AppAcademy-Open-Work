@@ -47,15 +47,15 @@ describe Hand do
             my_card = Card.new("Q","hearts")
             hand.add_card(test_card)
             hand.add_card(my_card)
-            expect{hand.remove_card(1)}.to equal(my_card)            
+            expect(hand.remove_card(1)).to equal(my_card)            
         end
 
         it "removes the Card at given index" do 
             my_card = Card.new("Q","hearts")
             hand.add_card(test_card)
             hand.add_card(my_card)
-            hand.remove_card(1) #remove test_card
-            expect(hand.cards[0]).to equal(my_card)
+            hand.remove_card(1) #remove my_card
+            expect(hand.cards[0]).to equal(test_card)
         end
     end
 

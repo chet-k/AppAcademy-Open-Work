@@ -33,8 +33,8 @@ class Hand
         when 1
             false #other hand wins if my category is higher
         when 0
-            # if hand categories are the same, then the group lengths will 
-            # also be the same.
+            # if hand categories are the same, then the size of group elements 
+            # will also be the same.
             my_groups, other_groups = self.group_cards_by_kind, other_deck.group_cards_by_kind
             my_groups.each_with_index do |g, i|
                 el1 = g[0]
