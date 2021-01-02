@@ -94,7 +94,7 @@ class SortingDemo
     end
   end
 
-  def self.wait_for_keypress(prompt)
+  def self.wait_for_keypress(prompt) 
     puts prompt
     STDIN.getch
   end
