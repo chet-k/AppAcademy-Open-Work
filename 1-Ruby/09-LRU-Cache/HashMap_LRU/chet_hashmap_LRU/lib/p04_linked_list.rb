@@ -84,15 +84,3 @@ class LinkedList
     inject([]) { |acc, link| acc << "[#{link.key}, #{link.val}]" }.join(", ")
   end
 end
-
-
-if __FILE__ == $PROGRAM_NAME
-  h = { first: 1, second: 2, third: 3 }
-  
-  list = LinkedList.new
-  h.each do |key, val|
-    list.append(key, val)
-  end
-
-  puts list.to_s
-end
