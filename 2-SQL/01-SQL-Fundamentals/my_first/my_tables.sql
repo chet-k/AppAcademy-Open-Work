@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS animals;
+DROP TABLE IF EXISTS countries;
+
 CREATE TABLE countries(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -9,7 +12,7 @@ CREATE TABLE animals(
     name VARCHAR(255) NOT NULL,
     country_id INTEGER NOT NULL,
 
-    FOREIGN KEY (country_id) REFERENCES
+    FOREIGN KEY (country_id) REFERENCES countries(id)
 );
 
 INSERT INTO
@@ -36,6 +39,3 @@ VALUES
     FROM countries
     WHERE name = 'United States'))
 ;
-
-DROP TABLE animals;
-DROP TABLE countries;
