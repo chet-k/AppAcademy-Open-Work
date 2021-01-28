@@ -30,7 +30,7 @@ class Play
         title = ?
     SQL
     return nil unless data.length > 0
-
+    
     Play.new(data[0])
   end
 
@@ -86,7 +86,7 @@ class Playwright
 
   def self.all
     data = PlayDBConnection.instance.execute("SELECT * FROM playwrights")
-    data.map { |datum| Play.new(datum) }
+    data.map { |datum| Playwright.new(datum) }
   end
 
   def self.find_by_name(find_name)
@@ -113,7 +113,7 @@ class Playwright
     raise "#{self} already in database" if self.id
     PlayDBConnection.instance.execute(<<-SQL, self.name, self.birth_year)
       INSERT INTO
-        plays (name, birth_year)
+        playwrights (name, birth_year)
       VALUES
         (?, ?)
     SQL
@@ -124,7 +124,7 @@ class Playwright
     raise "#{self} not in database" unless self.id
     PlayDBConnection.instance.execute(<<-SQL, self.name, self.birth_year)
       UPDATE
-        plays
+        playwrights
       SET
         name = ?, birth_year = ?
       WHERE
