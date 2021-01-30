@@ -1,6 +1,6 @@
+DROP TABLE if exists question_follows;
 DROP TABLE if exists question_likes;
 DROP TABLE if exists replies;
-DROP TABLE if exists question_follows;
 DROP TABLE if exists questions;
 DROP TABLE if exists users; 
 
@@ -8,7 +8,7 @@ PRAGMA foreign_keys = ON;
 
 -------------------
 CREATE TABLE users(
-    id PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     fname VARCHAR(255) NOT NULL,
     lname VARCHAR(255) NOT NULL
 );
@@ -18,11 +18,11 @@ INSERT INTO
 VALUES
     ("Chet", "Kupchella"), ("Hannah", "Huff"), ("Toby", "Cat");
 
--------------------
+-----------------
 CREATE TABLE questions(
-    id PRIMARY KEY,
-    title TEXT,
-    body TEXT,
+    id INTEGER PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
     author_id INTEGER NOT NULL,
 
     FOREIGN KEY (author_id) REFERENCES users(id)
@@ -40,7 +40,7 @@ WHERE
 INSERT INTO
   questions (title, body, author_id)
 SELECT
-  "Hannah Question", "HANNAH HANNAH HANNAH", 1
+  "Hannah Question", "HANNAH HANNAH HANNAH", 2
 FROM
   users
 WHERE
@@ -49,7 +49,7 @@ WHERE
 INSERT INTO
   questions (title, body, author_id)
 SELECT
-  "Toby Question", "MEOW MEOW MEOW", 1
+  "Toby Question", "MEOW MEOW MEOW", 3
 FROM
   users
 WHERE
@@ -57,14 +57,15 @@ WHERE
 
 
 -------------------
-CREATE TABLE question_follows(
-    id PRIMARY KEY,
+CREATE TABLE question_follows (
+    id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (question_id) REFERENCES questions(id)
 );
+
 
 INSERT INTO
   question_follows (user_id, question_id)
@@ -75,7 +76,7 @@ VALUES
   ((SELECT id FROM users WHERE fname = "Toby" AND lname = "Cat"),
   (SELECT id FROM questions WHERE title = "Chet Question")),
 
-  ((SELECT id FROM users WHERE fname "Hannah" AND lname = "HUFF"),
+  ((SELECT id FROM users WHERE fname = "Hannah" AND lname = "Huff"),
   (SELECT id FROM questions WHERE title = "Toby Question")
 );
 
