@@ -10,7 +10,7 @@ class Question
     end
 
     def self.find_by_id(id)
-        q = QuestionsDatabase.instance.execute(<<-SQL, id)
+        question_data = QuestionsDatabase.instance.execute(<<-SQL, id)
             SELECT
                 *
             FROM
@@ -18,13 +18,13 @@ class Question
             WHERE
                 id = ?
         SQL
-        return nil unless q.length > 0
+        return nil unless question_data.length > 0
 
-        Question.new(q.first)
+        Question.new(question_data.first)
     end 
 
     def self.find_by_title(title)
-        q = QuestionsDatabase.instance.execute(<<-SQL, title)
+        question_data = QuestionsDatabase.instance.execute(<<-SQL, title)
             SELECT
                 *
             FROM
@@ -32,12 +32,26 @@ class Question
             WHERE
                 title = ?
         SQL
-        return nil unless q.length > 0
+        return nil unless question_data.length > 0
 
-        Question.new(q.first)
+        Question.new(question_data.first)
     end 
 
     def self.find_by_author(fname,lname)
+        user = User.find_by_name(fname, lname)
+        raise "#{fname} #{lname} not found in DB" unless user
+        
+        question_data = QuestionsDatabase.instance.execute(<<-SQL, user.id)
+            SELECT
+                * 
+            FROM
+                questions
+            WHERE
+                author_id = ?
+        SQL
+        return nil unless question_data.length > 0
+
+        Question.new(question_data.first)
     end 
 
     def initialize(options)
@@ -47,4 +61,7 @@ class Question
         @author_id = options['author_id']
     end
 
+    def author
+        User.find_by_id(author_id)
+    end
 end

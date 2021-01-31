@@ -10,7 +10,7 @@ class User
     end
 
     def self.find_by_id(id)
-        q = QuestionsDatabase.instance.execute(<<-SQL, id)
+        user_data = QuestionsDatabase.instance.execute(<<-SQL, id)
             SELECT
                 *
             FROM
@@ -18,13 +18,13 @@ class User
             WHERE
                 id = ?
         SQL
-        return nil unless q.length > 0
+        return nil unless user_data.length > 0
 
-        User.new(q.first)
+        User.new(user_data.first)
     end 
 
     def self.find_by_name(fname, lname)
-        q = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
+        user_data = QuestionsDatabase.instance.execute(<<-SQL, fname, lname)
             SELECT
                 *
             FROM
@@ -32,9 +32,9 @@ class User
             WHERE
                 fname = ? AND lname = ?
         SQL
-        return nil unless q.length > 0
+        return nil unless user_data.length > 0
 
-        User.new(q.first)
+        User.new(user_data.first)
     end 
 
     def initialize(options)
