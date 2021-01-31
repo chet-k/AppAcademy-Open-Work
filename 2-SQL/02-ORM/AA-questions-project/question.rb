@@ -41,7 +41,11 @@ class Question
         user = User.find_by_name(fname, lname)
         raise "#{fname} #{lname} not found in DB" unless user
         
-        question_data = QuestionsDatabase.instance.execute(<<-SQL, user.id)
+        Question.find_by_author_id(user.id)
+    end 
+
+    def self.find_by_author_id(author_id)
+        question_data = QuestionsDatabase.instance.execute(<<-SQL, author_id)
             SELECT
                 * 
             FROM
@@ -51,8 +55,8 @@ class Question
         SQL
         return nil unless question_data.length > 0
 
-        Question.new(question_data.first)
-    end 
+        question_data.map {|q| Question.new(q)}
+    end
 
     def initialize(options)
         @id = options['id']
@@ -63,5 +67,9 @@ class Question
 
     def author
         User.find_by_id(author_id)
+    end
+
+    def replies
+        Reply.find_by_question_id(id)
     end
 end
