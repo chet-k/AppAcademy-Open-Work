@@ -83,7 +83,7 @@ VALUES
 
 -------------------
 CREATE TABLE replies(
-    id PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     question_id INTEGER NOT NULL,
     parent_reply_id INTEGER,
     author_id INTEGER NOT NULL,
@@ -114,7 +114,7 @@ VALUES
 
 -------------------
 CREATE TABLE question_likes(
-    id PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
 

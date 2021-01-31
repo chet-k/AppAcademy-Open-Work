@@ -7,7 +7,7 @@ class QuestionLike
 
     def self.all
         data = QuestionsDatabase.instance.execute("SELECT * FROM question_likes")
-        data.map {|datum| Reply.new(datum)}
+        data.map {|datum| QuestionLike.new(datum)}
     end
 
     def self.find_by_id(id)
@@ -21,7 +21,7 @@ class QuestionLike
         SQL
         return nil unless like_data.length > 0
 
-        Reply.new(like_data.first)
+        QuestionLike.new(like_data.first)
     end
 
     def initialize(options)
