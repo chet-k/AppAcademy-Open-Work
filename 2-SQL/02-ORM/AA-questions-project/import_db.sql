@@ -73,6 +73,9 @@ VALUES
   ((SELECT id FROM users WHERE fname = "Chet" AND lname = "Kupchella"),
   (SELECT id FROM questions WHERE title = "Hannah Question")),
 
+  ((SELECT id FROM users WHERE fname = "Chet" AND lname = "Kupchella"),
+  (SELECT id FROM questions WHERE title = "Toby Question")),
+
   ((SELECT id FROM users WHERE fname = "Toby" AND lname = "Cat"),
   (SELECT id FROM questions WHERE title = "Chet Question")),
 
