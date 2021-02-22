@@ -5,9 +5,14 @@ class ShortenedUrl < ApplicationRecord
     validates :short_url, uniqueness: true
 
     belongs_to :submitter,
-        class_name: 'User',
+        class_name: :User,
         foreign_key: :user_id,
         primary_key: :id 
+    
+    has_many :visitors,
+        class_name: :User,
+        foreign_key: :user_id,
+        primary_key: :id
 
     def self.create_short_url_for_user!(user, long_url)
         ShortenedUrl.create!(
