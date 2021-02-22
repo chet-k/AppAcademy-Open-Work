@@ -4,15 +4,20 @@ class ShortenedUrl < ApplicationRecord
     validates :long_url, presence: true
     validates :short_url, uniqueness: true
 
-    belongs_to :submitter,
+    belongs_to :user,
         class_name: :User,
         foreign_key: :user_id,
         primary_key: :id 
     
-    has_many :visitors,
-        class_name: :User,
-        foreign_key: :user_id,
+    has_many :visits,
+        class_name: :Visit,
+        foreign_key: :short_url_id,
         primary_key: :id
+    
+    has_many :visitors,
+        -> { distinct },
+        through: :visits,
+        source: :visitor
 
     def self.create_short_url_for_user!(user, long_url)
         ShortenedUrl.create!(
@@ -30,5 +35,21 @@ class ShortenedUrl < ApplicationRecord
         end
         
         out
+    end
+
+    def num_clicks
+        visits.count
+    end
+
+    def num_uniques
+        visitors.count
+    end
+
+    def num_recent_uniques
+        visits
+            .select('user_id')
+            .where('creatd_at > ?', 90.minutes.ago)
+            .distinct
+            .count
     end
 end

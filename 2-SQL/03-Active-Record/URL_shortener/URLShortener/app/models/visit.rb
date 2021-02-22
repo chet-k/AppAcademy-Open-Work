@@ -2,7 +2,7 @@ class Visit < ApplicationRecord
     validates :user_id, presence: true
     validates :short_url_id, presence: true
 
-    belongs_to :visitor,
+    belongs_to :visitor, 
         class_name: :User,
         foreign_key: :user_id,
         primary_key: :id
