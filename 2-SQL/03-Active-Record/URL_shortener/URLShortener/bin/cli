@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+class CLI
+    def run
+        user = get_user
+
+        case get_action
+        when 1
+            create_short_url(user)
+        when 2
+            visit_short_url(user)
+        end
+
+        puts 'Goodbye!'
+    end
+
+    
+    def create_short_url(user)
+        long_url = get_long_url
+        ShortenedUrl.create_short_url_for_user!(user, long_url)
+    end
+
+    def visit_short_url(user)
+        short_url = get_short_url
+        if short_url
+            Visit.record_visit!(user,short_url)
+        else
+            puts "invalid short url"
+        end
+    end
+
+    def get_action
+        puts "What do you want to do?"
+        puts "[1] Create shortened URL"
+        puts "[2] Visit shortened URL"
+        print "\n> "
+        gets.chomp.to_i
+    end
+
+    def get_user
+        puts "Input your email (blank to cancel):"
+        print "\n> "
+        user_email = gets.chomp
+        exit if user_email = ""
+
+        user = User.find_by(email: user_email)
+        user ? user : User.new(email: user_email)
+    end
+
+    def get_long_url
+        puts "Input long url:"
+        print "\n> "
+        gets.chomp        
+    end
+
+    def get_short_url
+        puts "Input short url:"
+        print "\n> "
+        user_short_url = gets.chomp
+        ShortenedUrl.find_by(short_url: user_short_url)
+    end
+end
+
+CLI.new.run
