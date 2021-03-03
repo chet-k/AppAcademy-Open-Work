@@ -1,4 +1,6 @@
 class Response < ApplicationRecord
+    validates :user_id, :answer_choice_id, presence: true
+
     belongs_to :answer_choice,
         class_name: :AnswerChoice,
         foreign_key: :answer_choice_id,

@@ -1,4 +1,6 @@
 class Question < ApplicationRecord
+    validates :poll_id, :text, presence: true
+
     has_many :answer_choices,
         class_name: :AnswerChoice,
         foreign_key: :question_id,
