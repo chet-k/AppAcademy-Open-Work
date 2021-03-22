@@ -4,6 +4,8 @@ require 'active_support/inflector'
 # of this project. It was only a warm up.
 
 class SQLObject
+  attr_accessor :id
+
   def self.columns
     return @columns if @columns
     cols = DBConnection.execute2(<<-SQL).first
@@ -40,8 +42,6 @@ class SQLObject
         #{self.table_name}
     SQL
 
-    puts results
-
     self.parse_all(results)
   end
 
@@ -50,7 +50,15 @@ class SQLObject
   end
 
   def self.find(id)
-    # ...
+    result = DBConnection.execute(<<-SQL)
+      SELECT
+        #{self.table_name}.*
+      FROM
+        #{self.table_name}
+      WHERE
+        #{self.table_name}.id = #{id}
+    SQL
+    result.length == 0 ? nil : self.new(result.first)
   end
 
   def initialize(params = {})
@@ -69,18 +77,43 @@ class SQLObject
   end
 
   def attribute_values
-    
+    self.class.columns.map {|col| self.send(col)}
   end
 
   def insert
-    # ...
+    cols = self.class.columns[1..-1]
+    column_names = cols.map(&:to_s).join(", ")
+    question_marks = (["?"] * cols.length).join(", ")
+    
+    DBConnection.execute(<<-SQL, *attribute_values[1..-1])
+      INSERT INTO
+        #{self.class.table_name} (#{column_names})
+      VALUES
+        (#{question_marks})
+    SQL
+
+    self.id = DBConnection.last_insert_row_id
   end
 
   def update
-    # ...
+    cols = self.class.columns[1..-1].map {|attr_name| "#{attr_name} = ?" }
+    query_set = cols.join(", ")
+
+    DBConnection.execute(<<-SQL, *attribute_values[1..-1], self.id)
+      UPDATE
+        #{self.class.table_name}
+      SET
+        #{query_set}
+      WHERE
+        id = ?
+    SQL
   end
 
   def save
-    # ...
+    if self.id.nil? 
+      insert
+    else
+      update
+    end
   end
 end
