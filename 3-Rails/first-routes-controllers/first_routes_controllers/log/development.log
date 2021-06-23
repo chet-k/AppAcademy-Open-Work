@@ -1,2 +1,9 @@
   [1m[35m (218.0ms)[0m  [1m[35mCREATE DATABASE "first_routes_controllers_development" ENCODING = 'unicode'[0m
   [1m[35m (111.9ms)[0m  [1m[35mCREATE DATABASE "first_routes_controllers_test" ENCODING = 'unicode'[0m
+Started GET "/" for ::1 at 2021-06-22 21:22:16 -0400
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /Users/chetkupchella/.rbenv/versions/2.5.1/lib/ruby/gems/2.5.0/gems/railties-6.1.3.2/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /Users/chetkupchella/.rbenv/versions/2.5.1/lib/ruby/gems/2.5.0/gems/railties-6.1.3.2/lib/rails/templates/rails/welcome/index.html.erb (Duration: 7.7ms | Allocations: 528)
+Completed 200 OK in 29ms (Views: 11.3ms | ActiveRecord: 0.0ms | Allocations: 4293)
+
+
