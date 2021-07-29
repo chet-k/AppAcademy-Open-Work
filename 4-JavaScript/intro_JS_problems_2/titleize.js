@@ -8,4 +8,4 @@ const titleize = (nameArr, printCallback) => {
     });
 };
 
-// titleize(["Mary", "Brian", "Leo"], nameToTitle)
+// console.log(titleize(["Mary", "Brian", "Leo"], nameToTitle))
